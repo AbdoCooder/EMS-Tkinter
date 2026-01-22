@@ -72,3 +72,4 @@ initialQuery = """CREATE TABLE IF NOT EXISTS employes (
              )"""
 
 db = DataBaseManager(dbName, initialQuery)
+print(db)
