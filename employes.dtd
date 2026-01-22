@@ -17,5 +17,3 @@
     <!ELEMENT role (job_title, job_description)>
       <!ELEMENT job_title (#PCDATA)>
       <!ELEMENT job_description (#PCDATA)>
-
-
