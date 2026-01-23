@@ -56,6 +56,35 @@ class DataBaseManager:
     def delete_employee(self, employeeID):
         query = "DELETE FROM employes WHERE id = ?"
         self.execdb(query, (employeeID,))
+    
+    def update_employee(self, employeeID, data):
+        query = """
+        UPDATE employes SET
+            full_name = ?,
+            birth_date = ?,
+            hiring_date = ?,
+            dept_name = ?,
+            email = ?,
+            address = ?,
+            job_title = ?,
+            job_description = ?
+        WHERE id = ?
+        """
+        
+        values = (
+            data["full_name"],
+            data["birth_date"],
+            data["hiring_date"],
+            data["dept_name"],
+            data["email"],
+            data["address"],
+            data["job_title"],
+            data["job_description"],
+            employeeID,
+        )
+        
+        self.execdb(query, values)
+
 
 
 dbName = "employes.db"
