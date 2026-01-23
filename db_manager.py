@@ -86,18 +86,18 @@ class DataBaseManager:
 
 
 
-dbName = "employes.db"
-initialQuery = """CREATE TABLE IF NOT EXISTS employes (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                full_name TEXT NOT NULL,
-                birth_date TEXT,
-                hiring_date TEXT,
-                dept_name TEXT,
-                email TEXT,
-                address TEXT,
-                job_title TEXT,
-                job_description TEXT
-             )"""
+# dbName = "employes.db"
+# initialQuery = """CREATE TABLE IF NOT EXISTS employes (
+#                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+#                 full_name TEXT NOT NULL,
+#                 birth_date TEXT,
+#                 hiring_date TEXT,
+#                 dept_name TEXT,
+#                 email TEXT,
+#                 address TEXT,
+#                 job_title TEXT,
+#                 job_description TEXT
+#              )"""
 
 # db = DataBaseManager(dbName, initialQuery)
 
