@@ -97,5 +97,5 @@ class xmlManager:
             print(f"Error during validation: {e}")
             return False
 
-xml = xmlManager()
-xml.exportXML()
+# xml = xmlManager()
+# xml.exportXML()
