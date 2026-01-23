@@ -1,6 +1,5 @@
 import sqlite3
 
-
 class DataBaseManager:
     def __init__(self, db_name: str = "employes.db", initialQuery=None) -> None:
         self.dbName = db_name
@@ -37,7 +36,7 @@ class DataBaseManager:
         """
 
         values = (
-            data["name"],
+            data["full_name"],
             data["birth_date"],
             data["hiring_date"],
             data["dept_name"],
@@ -71,5 +70,18 @@ initialQuery = """CREATE TABLE IF NOT EXISTS employes (
                 job_description TEXT
              )"""
 
-db = DataBaseManager(dbName, initialQuery)
-print(db)
+# db = DataBaseManager(dbName, initialQuery)
+
+# new_emp = {
+#     "full_name":"Mohammed",
+#     "birth_date":"12/04/2002",
+#     "hiring_date":"21/08/2021",
+#     "dept_name":"IT",
+#     "email":"Mohammed@IT.com",
+#     "address":"Tetouan",
+#     "job_title":"Software Engineer",
+#     "job_description":"Ki3raf ydir kolxi"
+# }
+
+# db.add_employee(new_emp)
+# db.get_employees()
