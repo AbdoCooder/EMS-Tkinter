@@ -1,0 +1,33 @@
+version: '3.8'
+
+# Platform-specific setup:
+# - macOS: Uses XQuartz with network display forwarding
+# - Linux: Uses native X11 socket mounting
+# - Windows (WSL2): Uses Xvfb or VcXsrv with DISPLAY forwarding
+
+services:
+  ems:
+    build: .
+    container_name: ems-tkinter
+    environment:
+      # Linux: Use :0 or :1 depending on your X server
+      # macOS: Use host.docker.internal:0 (requires XQuartz)
+      # Windows (WSL2): Use host.docker.internal:0 (requires VcXsrv/Xming)
+      - DISPLAY=${DISPLAY:-:0}
+      # Allow network access for X11 on some systems
+      - XAUTHORITY: /root/.Xauthority
+    volumes:
+      # Linux & macOS: Mount X11 socket (if available)
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      # macOS: Mount Xauthority for authentication
+      - ~/.Xauthority:/root/.Xauthority:rw
+      # Mount the app directory to persist changes and database
+      - .:/app
+    stdin_open: true
+    tty: true
+    networks:
+      - ems-network
+      
+networks:
+  ems-network:
+    driver: bridge
