@@ -1,33 +1,44 @@
-# Use official Python runtime as a parent image
 FROM python:3.11-slim
 
-# Set environment variables
-ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    DISPLAY=:0
-
-# Install system dependencies
+# Install dependencies for Tkinter, X11, and VNC
 RUN apt-get update && apt-get install -y \
     python3-tk \
+    python3-dev \
     x11-apps \
     xauth \
+    x11vnc \
+    xvfb \
+    fluxbox \
+    wget \
     && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
+# Install websockify via pip
+RUN pip install --no-cache-dir websockify numpy
+
+# Install noVNC for web-based VNC access
+RUN wget -qO- https://github.com/novnc/noVNC/archive/refs/tags/v1.4.0.tar.gz | tar xz -C /opt/ \
+    && mv /opt/noVNC-1.4.0 /opt/novnc \
+    && ln -s /opt/novnc/vnc.html /opt/novnc/index.html
+
 WORKDIR /app
 
-# Copy requirements and install Python dependencies
-COPY requirements.txt .
+COPY . /app/
+
+# Install Python dependencies from requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy all project files
-COPY . .
+# Create startup script
+RUN echo '#!/bin/bash\n\
+Xvfb :99 -screen 0 1920x1080x24 &\n\
+export DISPLAY=:99\n\
+fluxbox &\n\
+x11vnc -display :99 -nopw -listen 0.0.0.0 -xkb -forever -shared -threads &\n\
+websockify --web /opt/novnc 6080 localhost:5900 &\n\
+sleep 2\n\
+python main.py\n\
+tail -f /dev/null\n\
+' > /start.sh && chmod +x /start.sh
 
-# Create a non-root user for security
-RUN useradd -m -s /bin/bash appuser && \
-    chown -R appuser:appuser /app
+EXPOSE 6080
 
-USER appuser
-
-# Entry point
-CMD ["python", "main.py"]
+CMD ["/start.sh"]

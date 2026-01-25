@@ -16,8 +16,7 @@ class MainApp:
         self._setup_filters()
         self._setup_treeview()
         self._setup_buttons()
-        
-        # Initial Data Load
+
         self.load_data()
 
     def _setup_menu(self):
@@ -83,7 +82,7 @@ class MainApp:
         # Clear Treeview
         for item in self.tree.get_children():
             self.tree.delete(item)
-        
+
         # Fetch from DB
         rows = self.db.get_employees()
         for row in rows:

@@ -3,7 +3,7 @@ __pycache__/
 *.py[codz]
 *$py.class
 environment.yml
-
+.vscode/
 # C extensions
 *.so
 # Distribution / packaging

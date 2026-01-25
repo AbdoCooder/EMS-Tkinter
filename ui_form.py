@@ -13,7 +13,7 @@ class EmployeeForm(tk.Toplevel):
         self.resizable(False, False)
 
         self._build_ui()
-        
+
         # If editing, fill fields
         if self.employee_data:
             self._fill_fields()
