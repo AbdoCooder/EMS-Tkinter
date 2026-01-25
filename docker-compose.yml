@@ -15,7 +15,7 @@ services:
       # Windows (WSL2): Use host.docker.internal:0 (requires VcXsrv/Xming)
       - DISPLAY=${DISPLAY:-:0}
       # Allow network access for X11 on some systems
-      - XAUTHORITY: /root/.Xauthority
+      - XAUTHORITY=/root/.Xauthority
     volumes:
       # Linux & macOS: Mount X11 socket (if available)
       - /tmp/.X11-unix:/tmp/.X11-unix:rw

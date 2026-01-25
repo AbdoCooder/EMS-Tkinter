@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-import sqlite3
 
 # import DB layer
 from db_manager import (
@@ -11,7 +10,6 @@ from db_manager import (
     update_employee,
     delete_employee
 )
-
 
 class EmployeeApp(tk.Tk):
     def __init__(self):
