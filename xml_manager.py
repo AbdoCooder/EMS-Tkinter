@@ -6,6 +6,13 @@ class xmlManager:
     def __init__(self) -> None:
         self.employee = {}
 
+    def _extractDate(self, date_element):
+        """Safely extract date from XML element, handling None values."""
+        day = date_element[0].text or "01"
+        month = date_element[1].text or "01"
+        year = date_element[2].text or "2000"
+        return f"{day}/{month}/{year}"
+
     def importXML(self, xml_file:str = "employes.xml"):
         if not self.validateXML(xml_file):
             raise Exception("The XML file" + xml_file + "doesn't match the DTD in employes.dtd")
@@ -14,8 +21,8 @@ class xmlManager:
         for emp in self.employes:
             identity = emp[0]
             full_name = identity[0].text
-            birthday = identity[1][0][0].text + '/' + identity[1][0][1].text + '/' + identity[1][0][2].text
-            hiring_date = identity[2][0][0].text + '/' + identity[2][0][1].text + '/' + identity[2][0][2].text
+            birthday = self._extractDate(identity[1][0])
+            hiring_date = self._extractDate(identity[2][0])
             departement = emp[1]
             dept_name = departement[0].text
             contact = emp[2]
@@ -71,6 +78,8 @@ class xmlManager:
     def exportXML(self, file:str="data.xml"):
         db = DataBaseManager("employes.db")
         dbEmp = db.get_employees()
+        if dbEmp is None:
+            dbEmp = []
         employes = etree.Element("employes")
         for emp in dbEmp:
             employee = etree.SubElement(employes, "employee")
