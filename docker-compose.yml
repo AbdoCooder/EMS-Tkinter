@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  ems-app:
+    build: .
+    container_name: ems-tkinter-app
+    environment:
+      - DISPLAY=host.docker.internal:0
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ~/.Xauthority:/home/appuser/.Xauthority:rw
+      - .:/app
+    ports:
+      - "5000:5000"
+    networks:
+      - ems-network
+
+networks:
+  ems-network:
+    driver: bridge
