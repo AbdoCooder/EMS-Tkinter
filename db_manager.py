@@ -83,34 +83,3 @@ class DataBaseManager:
         )
         
         self.execdb(query, values)
-
-
-
-# dbName = "employes.db"
-# initialQuery = """CREATE TABLE IF NOT EXISTS employes (
-#                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-#                 full_name TEXT NOT NULL,
-#                 birth_date TEXT,
-#                 hiring_date TEXT,
-#                 dept_name TEXT,
-#                 email TEXT,
-#                 address TEXT,
-#                 job_title TEXT,
-#                 job_description TEXT
-#              )"""
-
-# db = DataBaseManager(dbName, initialQuery)
-
-# new_emp = {
-#     "full_name":"Mohammed",
-#     "birth_date":"12/04/2002",
-#     "hiring_date":"21/08/2021",
-#     "dept_name":"IT",
-#     "email":"Mohammed@IT.com",
-#     "address":"Tetouan",
-#     "job_title":"Software Engineer",
-#     "job_description":"Ki3raf ydir kolxi"
-# }
-
-# db.add_employee(new_emp)
-# db.get_employees()
