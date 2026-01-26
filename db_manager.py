@@ -1,4 +1,5 @@
 import sqlite3
+from validators import validate_employee_data, ValidationError
 
 class DataBaseManager:
     def __init__(self, db_name: str = "employes.db", initialQuery=None) -> None:
@@ -26,6 +27,11 @@ class DataBaseManager:
                 con.close()
 
     def add_employee(self, data):
+        # Validate data before insertion
+        is_valid, errors = validate_employee_data(data)
+        if not is_valid:
+            raise ValidationError("Validation failed: " + "; ".join(errors))
+        
         query = """
         INSERT INTO employes (
             full_name, birth_date, hiring_date, 
@@ -57,6 +63,11 @@ class DataBaseManager:
         self.execdb(query, (employeeID,))
     
     def update_employee(self, employeeID, data):
+        # Validate data before update
+        is_valid, errors = validate_employee_data(data)
+        if not is_valid:
+            raise ValidationError("Validation failed: " + "; ".join(errors))
+        
         query = """
         UPDATE employes SET
             full_name = ?,
