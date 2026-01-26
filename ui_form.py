@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
+from validators import validate_employee_data
 
 class EmployeeForm(tk.Toplevel):
     def __init__(self, parent, db, refresh_callback, employee_data=None):
@@ -98,9 +99,11 @@ class EmployeeForm(tk.Toplevel):
             "job_description": self.entry_desc.get("1.0", "end-1c")
         }
 
-        # 2. Basic Validation
-        if not data["full_name"] or not data["dept_name"]:
-            messagebox.showerror("Error", "Name and Department are required!")
+        # 2. Comprehensive Validation
+        is_valid, errors = validate_employee_data(data)
+        if not is_valid:
+            error_message = "Please fix the following errors:\n\n" + "\n".join(f"• {err}" for err in errors)
+            messagebox.showerror("Validation Error", error_message)
             return
 
         try:

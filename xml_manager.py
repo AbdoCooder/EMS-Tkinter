@@ -1,6 +1,7 @@
 
 from lxml import etree
 from db_manager import DataBaseManager
+from validators import validate_employee_data
 
 class xmlManager:
     def __init__(self) -> None:
@@ -18,7 +19,11 @@ class xmlManager:
             raise Exception("The XML file" + xml_file + "doesn't match the DTD in employes.dtd")
         self.tree = etree.parse(xml_file)
         self.employes = self.tree.getroot()
-        for emp in self.employes:
+        
+        validation_errors = []
+        imported_count = 0
+        
+        for idx, emp in enumerate(self.employes, start=1):
             identity = emp[0]
             full_name = identity[0].text
             birthday = self._extractDate(identity[1][0])
@@ -41,8 +46,21 @@ class xmlManager:
                 "job_title":job_title,
                 "job_description":job_description
             }
+            
+            # Validate employee data before importing
+            is_valid, errors = validate_employee_data(self.employee)
+            if not is_valid:
+                validation_errors.append(f"Employee #{idx} ({full_name or 'Unknown'}): {'; '.join(errors)}")
+                continue
+            
             db = DataBaseManager("employes.db")
             db.add_employee(self.employee)
+            imported_count += 1
+        
+        if validation_errors:
+            error_msg = f"Imported {imported_count} employee(s). The following records had validation errors and were skipped:\n\n"
+            error_msg += "\n\n".join(validation_errors)
+            raise Exception(error_msg)
 
 
     def _exportIdentity(self, parent, dbRow):
