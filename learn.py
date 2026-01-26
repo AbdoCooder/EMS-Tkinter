@@ -1,6 +1,5 @@
 import tkinter as tk
 from db_manager import DataBaseManager
-from ui_main import MainApp
 
 # Database Configuration
 DB_NAME = "employes.db"
@@ -16,12 +15,18 @@ INITIAL_QUERY = """CREATE TABLE IF NOT EXISTS employes (
                 job_description TEXT
              )"""
 
-if __name__ == "__main__":
-    # 1. Initialize DB (Create table if not exists)
-    db = DataBaseManager(DB_NAME, INITIAL_QUERY)
-    
-    # 2. Launch GUI
-    root = tk.Tk()
-    root.minsize(width='1000', height='700')
-    app = MainApp(root, db)
-    root.mainloop()
+
+def shownames():
+    list.delete(0, tk.END)
+    emps = db.get_employees()
+    for e in emps:
+        list.insert(tk.END, e)
+
+db = DataBaseManager(DB_NAME, INITIAL_QUERY)
+root = tk.Tk()
+root.geometry('1920x1080')
+list = tk.Listbox(root)
+btn = tk.Button(root, text='Load Data', command=shownames)
+btn.grid(row=0, column=0, sticky=(tk.NSEW))
+list.grid(row=3, column=0)
+root.mainloop()

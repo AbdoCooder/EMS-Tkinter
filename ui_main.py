@@ -10,36 +10,59 @@ class MainApp:
         self.xml_mgr = xmlManager()
 
         self.root.title("Employee Management System")
-        self.root.geometry("1000x600")
+        self.root.geometry("1920x1080")
 
         self._setup_menu()
         self._setup_filters()
-        self._setup_treeview()
         self._setup_buttons()
+        self._setup_treeview()
 
         self.load_data()
 
     def _setup_menu(self):
         menubar = tk.Menu(self.root)
         file_menu = tk.Menu(menubar, tearoff=0)
+
         file_menu.add_command(label="Import XML...", command=self.import_xml)
         file_menu.add_command(label="Export XML...", command=self.export_xml)
         file_menu.add_separator()
         file_menu.add_command(label="Exit", command=self.root.quit)
+
         menubar.add_cascade(label="File", menu=file_menu)
         self.root.config(menu=menubar)
+    
+
+    # --- XML Integration ---
+    def import_xml(self):
+        filename = filedialog.askopenfilename(filetypes=[("XML Files", "*.xml")])
+        if filename:
+            try:
+                self.xml_mgr.importXML(filename)
+                self.load_data()
+                messagebox.showinfo("Success", "XML Imported successfully!")
+            except Exception as e:
+                messagebox.showerror("XML Error", str(e))
+
+    def export_xml(self):
+        filename = filedialog.asksaveasfilename(defaultextension=".xml", filetypes=[("XML Files", "*.xml")])
+        if filename:
+            try:
+                self.xml_mgr.exportXML(filename)
+                messagebox.showinfo("Success", "Data exported to XML!")
+            except Exception as e:
+                messagebox.showerror("XML Error", str(e))
 
     def _setup_filters(self):
-        frame_top = tk.Frame(self.root, bg="#f0f0f0", pady=10)
+        frame_top = tk.Frame(self.root, pady=10)
         frame_top.pack(fill="x")
 
-        tk.Label(frame_top, text="Search Name:", bg="#f0f0f0").pack(side="left", padx=10)
+        tk.Label(frame_top, text="Search Name:").pack(side="left", padx=10)
         self.search_var = tk.StringVar()
         entry_search = tk.Entry(frame_top, textvariable=self.search_var)
         entry_search.pack(side="left", padx=5)
         
-        tk.Button(frame_top, text="🔍 Search", command=self.filter_data).pack(side="left", padx=5)
-        tk.Button(frame_top, text="🔄 Reset", command=self.load_data).pack(side="left", padx=5)
+        tk.Button(frame_top, text="Search", command=self.filter_data).pack(side="left", padx=5)
+        tk.Button(frame_top, text="Reset", command=self.load_data).pack(side="left", padx=5)
 
     def _setup_treeview(self):
         # Columns must match DB SELECT order
@@ -68,14 +91,18 @@ class MainApp:
         frame_btn = tk.Frame(self.root, pady=10)
         frame_btn.pack(fill="x")
 
-        tk.Button(frame_btn, text="➕ Add Employee", bg="#2196F3", fg="white", font=("Arial", 10, "bold"), 
-                  command=self.open_add_form).pack(side="left", padx=20)
+        frame_btn.columnconfigure(0, weight=1) 
+        frame_btn.columnconfigure(1, weight=1)
+        frame_btn.columnconfigure(2, weight=1)
+
+        tk.Button(frame_btn, text="Add Employee", bg="#2196F3", fg="white", font=("Arial", 10, "bold"), 
+                  command=self.open_add_form).grid(row=0, column=0)
         
-        tk.Button(frame_btn, text="✏️ Edit Selected", bg="#FFC107", 
-                  command=self.open_edit_form).pack(side="left", padx=20)
+        tk.Button(frame_btn, text="Edit Selected", bg="#FFC107", 
+                  command=self.open_edit_form).grid(row=0, column=1)
         
-        tk.Button(frame_btn, text="❌ Delete Selected", bg="#F44336", fg="white", 
-                  command=self.delete_employee).pack(side="right", padx=20)
+        tk.Button(frame_btn, text="Delete Selected", bg="#F44336", fg="white", 
+                  command=self.delete_employee).grid(row=0, column=2)
 
     # --- Data Logic ---
     def load_data(self):
@@ -92,10 +119,8 @@ class MainApp:
         keyword = self.search_var.get().lower()
         if not keyword:
             return
-
-        # Simple client-side filter (can be moved to SQL for optimization)
         rows = self.db.get_employees()
-        filtered = [row for row in rows if keyword in row[1].lower() or keyword in row[4].lower()]
+        filtered = [row for row in rows if keyword in row[1].lower() or keyword in row[4].lower()] #AI
         
         # Clear and Refill
         for item in self.tree.get_children():
@@ -130,22 +155,3 @@ class MainApp:
             self.db.delete_employee(item_id)
             self.load_data()
 
-    # --- XML Integration ---
-    def import_xml(self):
-        filename = filedialog.askopenfilename(filetypes=[("XML Files", "*.xml")])
-        if filename:
-            try:
-                self.xml_mgr.importXML(filename)
-                self.load_data()
-                messagebox.showinfo("Success", "XML Imported successfully!")
-            except Exception as e:
-                messagebox.showerror("XML Error", str(e))
-
-    def export_xml(self):
-        filename = filedialog.asksaveasfilename(defaultextension=".xml", filetypes=[("XML Files", "*.xml")])
-        if filename:
-            try:
-                self.xml_mgr.exportXML(filename)
-                messagebox.showinfo("Success", "Data exported to XML!")
-            except Exception as e:
-                messagebox.showerror("XML Error", str(e))

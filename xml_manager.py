@@ -57,9 +57,19 @@ class xmlManager:
 
     def _exportDate(self, parent, dbRow, dbCol):
         date = etree.SubElement(parent, "date")
-        etree.SubElement(date, "day").text = (dbRow[dbCol].split('/'))[0]     # day
-        etree.SubElement(date, "month").text = (dbRow[dbCol].split('/')[1])   # month
-        etree.SubElement(date, "year").text = (dbRow[dbCol].split('/'))[2]    # year
+        date_string = dbRow[dbCol]
+        
+        try:
+            parts = date_string.split('/')
+            if len(parts) == 3:
+                day, month, year = parts
+            else:
+                day, month, year = "", "", "" 
+        except (AttributeError, IndexError):
+            day, month, year = "", "", ""
+        etree.SubElement(date, "day").text = day
+        etree.SubElement(date, "month").text = month
+        etree.SubElement(date, "year").text = year
 
     def _exportDepartement(self, parent, dbRow):
         departement = etree.SubElement(parent, "departement")
@@ -82,6 +92,9 @@ class xmlManager:
             dbEmp = []
         employes = etree.Element("employes")
         for emp in dbEmp:
+            if len(emp) < 9:
+                print(f"Skipping incomplete record: {emp}")
+                continue
             employee = etree.SubElement(employes, "employee")
             self._exportIdentity(employee, emp)
             self._exportDepartement(employee, emp)
