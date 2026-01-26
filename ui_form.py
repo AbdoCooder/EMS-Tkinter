@@ -8,8 +8,8 @@ class EmployeeForm(tk.Toplevel):
         self.refresh_callback = refresh_callback
         self.employee_data = employee_data
         self.title("Employee Form")
-        self.geometry("600x550")
-        self.resizable(False, False)
+        self.geometry("800x700")
+        # self.resizable(False, False)
         self._build_ui()
         if self.employee_data:
             self._fill_fields()
@@ -66,28 +66,49 @@ class EmployeeForm(tk.Toplevel):
         self.entry_title.insert(0, d[7])
         self.entry_desc.insert("1.0", d[8])
 
+    def _validate_date_format(self, date_string):
+        """Validate date format DD/MM/YYYY"""
+        if not date_string:
+            return True
+        try:
+            parts = date_string.split('/')
+            if len(parts) != 3:
+                return False
+            day, month, year = int(parts[0]), int(parts[1]), int(parts[2])
+            if day < 1 or day > 31 or month < 1 or month > 12 or year < 1900:
+                return False
+            return True
+        except ValueError:
+            return False
+
     def save_employee(self):
         data = {
             "full_name": self.entry_name.get(),
-            "birth_date": self.entry_birth.get(),
-            "hiring_date": self.entry_hiring.get(),
-            "dept_name": self.combo_dept.get(),
-            "email": self.entry_email.get(),
-            "address": self.entry_address.get(),
-            "job_title": self.entry_title.get(),
-            "job_description": self.entry_desc.get("1.0", "end-1c")
+            "birth_date": self._validate_date_format(self.entry_birth.get()) and self.entry_birth.get() or None,
+            "hiring_date": self._validate_date_format(self.entry_hiring.get()) and self.entry_hiring.get() or None,
+            "dept_name": self.combo_dept.get() or None,
+            "email": self.entry_email.get() or None,
+            "address": self.entry_address.get() or None,
+            "job_title": self.entry_title.get() or None,
+            "job_description": self.entry_desc.get("1.0", "end-1c") or None,
         }
         if not data["full_name"] or not data["dept_name"]:
+            self.refresh_callback()
+            self.destroy()
             messagebox.showerror("Error", "Name and Department are required!")
             return
         try:
             if self.employee_data:
                 self.db.update_employee(self.employee_data[0], data)
+                self.refresh_callback()
+                self.destroy()
                 messagebox.showinfo("Success", "Employee updated successfully!")
             else:
                 self.db.add_employee(data)
+                self.refresh_callback()
+                self.destroy()
                 messagebox.showinfo("Success", "Employee added successfully!")
+        except Exception as e:
             self.refresh_callback()
             self.destroy()
-        except Exception as e:
             messagebox.showerror("Database Error", str(e))

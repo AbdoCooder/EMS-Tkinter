@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<employes>
+  <employee>
+    <identity>
+      <name>qwdwqdawd</name>
+      <birthday>
+        <date>
+          <day>12</day>
+          <month>12</month>
+          <year>2021</year>
+        </date>
+      </birthday>
+      <hiring_date>
+        <date>
+          <day>12</day>
+          <month>04</month>
+          <year>2003</year>
+        </date>
+      </hiring_date>
+    </identity>
+    <departement>
+      <dept_name>IT</dept_name>
+    </departement>
+    <contact>
+      <email></email>
+      <address></address>
+    </contact>
+    <role>
+      <job_title></job_title>
+      <job_description></job_description>
+    </role>
+  </employee>
+</employes>
