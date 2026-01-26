@@ -130,10 +130,10 @@ def validate_full_name(name: Optional[str], required: bool = True) -> Tuple[bool
     if len(name) > MAX_NAME_LENGTH:
         return False, f"Full name must be less than {MAX_NAME_LENGTH} characters."
     
-    # Name should contain only letters, spaces, hyphens, and apostrophes
+    # Name should contain only letters, spaces, hyphens, apostrophes, and periods
     name_pattern = r"^[a-zA-Z\s\-'\.]+$"
     if not re.match(name_pattern, name):
-        return False, "Full name can only contain letters, spaces, hyphens, and apostrophes."
+        return False, "Full name can only contain letters, spaces, hyphens, apostrophes, and periods."
     
     return True, ""
 

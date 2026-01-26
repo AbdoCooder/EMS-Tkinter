@@ -23,6 +23,9 @@ class xmlManager:
         validation_errors = []
         imported_count = 0
         
+        # Create single database connection for all imports
+        db = DataBaseManager("employes.db")
+        
         for idx, emp in enumerate(self.employes, start=1):
             identity = emp[0]
             full_name = identity[0].text
@@ -53,7 +56,6 @@ class xmlManager:
                 validation_errors.append(f"Employee #{idx} ({full_name or 'Unknown'}): {'; '.join(errors)}")
                 continue
             
-            db = DataBaseManager("employes.db")
             db.add_employee(self.employee)
             imported_count += 1
         
